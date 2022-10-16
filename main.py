@@ -1,20 +1,12 @@
-"""
-
-This is a sample Python script.
-
-Press Shift+F10 to execute it or replace it with your code.
-Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.//
-
-"""
+# to help with debugging
+def unbleach(n: str) -> str:
+    return n.replace(" ", "s").replace("\t", "t").replace("\n", "n")
 
 
-def print_hi(name: str) -> None:
-    """Use a breakpoint in the code line below to debug your script."""
-    print(f"Hi, {name}...")  # Press Ctrl+F8 to toggle the breakpoint.
+# solution
+def whitespace(code: str, inp: str = "") -> str:
+    output: str = ""
+    # stack: list = []
+    # heap: dict = {}
 
-
-# Press the green button in the gutter to run the script.
-if __name__ == "__main__":
-    print_hi("PyCharm")
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    return output
