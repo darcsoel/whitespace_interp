@@ -31,6 +31,14 @@ class WhitespaceParser:
         "\t   ": "add",
         "\t  \t": "subsctract",
         "\t  \n": "multiplication",
+        "\t  \t ": "integer_division",
+        "\t \t\t": "modulo",
+        "\t\t ": "store_in__heap",
+        "\t\t\t": "retrieve_from_heap",
+        # input-output
+        "\n  ": "mark_location",
+        "\n \t": "call_subrt",
+        "\n \n": "jump",
     }
 
     def __init__(self, code: str) -> None:
