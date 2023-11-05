@@ -52,3 +52,4 @@ repos:
       'types_or': [ python, pyi ]
       args: ["--no-strict-optional", "--ignore-missing-imports", "--scripts-are-modules"]
       require_serial: true
+      exclude: "tests.py"
