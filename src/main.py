@@ -1,15 +1,6 @@
 import re
 from typing import Any, Union
 
-from imps import (
-    AbstractImps,
-    ArithmeticImps,
-    HeapAccessImps,
-    IoControlImps,
-    IoImps,
-    StackManipulationImps,
-)
-
 
 # to help with debugging
 def unbleach(n: str) -> str:
@@ -17,33 +8,58 @@ def unbleach(n: str) -> str:
 
 
 class WhitespaceParser:
+    """
+    Parse code into tokens.
+
+    """
+
     keywords = {" ", "\n", "\t"}
 
-    tokens_representation = {
+    tokens_representation: dict[str, str] = {
         # stack
-        "  ": "stack_push",  # parameter
+        "  ": "stack_push",  # number
         " \n ": "stack_duplicate",
-        " \t ": "stack_copy",  # parameter
+        " \t ": "stack_copy",  # number
         " \n\t": "stack_swap_top_two",
         " \n\n": "stack_discard_top",
-        " \t\n": "stack_slide_n_top_off",  # parameter
+        " \t\n": "stack_slide_n_top_off",  # number
         # arithmetic
         "\t   ": "add",
         "\t  \t": "subsctract",
         "\t  \n": "multiplication",
         "\t  \t ": "integer_division",
         "\t \t\t": "modulo",
+        # heap access
         "\t\t ": "store_in__heap",
         "\t\t\t": "retrieve_from_heap",
-        # input-output
-        "\n  ": "mark_location",
-        "\n \t": "call_subrt",
-        "\n \n": "jump",
+        # flow control
+        "\n  ": "mark_location",  # label
+        "\n \t": "call_subrt",  # label
+        "\n \n": "jump",  # label
+        "\n\t ": "jump_if_zer",  # label,
+        "\n\t\t": "jump_if_neg",  # label
+        "\n\t\n": "end_subr",
+        "\n\n\n": "end",
+        # IO
+        "\t\n  ": "stack_pop",
+        "\t\n \t": "stack_pop_n",
+        "\t\n\t ": "read_char_stack_push",
+        "\t\n\t\t": "read_num_stack_push",
+    }
+
+    tokens_with_param: set[str] = {
+        "stack_push",
+        "stack_copy",
+        "stack_slide_n_top_off",
+        "mark_location",
+        "call_subrt",
+        "jump",
+        "jump_if_zer",
+        "jump_if_neg",
     }
 
     def __init__(self, code: str) -> None:
         self._code = code
-        self._code_shadow = code
 
         self._stack: list[Union[str, int]] = []
         self._heap: dict[str, Any] = {}
@@ -61,27 +77,28 @@ class WhitespaceParser:
 
     def process(self) -> list[str]:
         code = self.remove_comments_from_code()
-        start_index, end_index = 0, 1
+        start_index = 0
         tokens = []
 
-        while end_index <= len(code):
-            for imp, executor_class in self.imps.items():
-                if code[start_index:end_index].startswith(imp):
-                    executor = executor_class(code, start_index, end_index)
-                    # executor.check_token()
-                    tokens.append(next(executor.process()))
-                else:
-                    end_index += 1
+        while start_index < len(code):
+            for code, token in self.tokens_representation.items():
+                if self._code[start_index:].startswith(code):
+                    tokens.append(token)
+                    start_index += len(token)
 
         return tokens
 
 
 class WhitespaceInterpreter:
+    """
+    Receives tokens and builds AST.
+    """
+
     def __init__(self, tokens: list[str]) -> None:
         self._tokens = tokens
 
     def execute(self):
-        return "0"
+        pass
 
 
 # solution

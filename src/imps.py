@@ -8,12 +8,6 @@ class AbstractImps:
         self._start_index = start_index
         self._end_index = end_index
 
-    def check_token(self) -> bool:
-        raise NotImplementedError
-
-    def process(self) -> str:
-        raise NotImplementedError
-
 
 class StackManipulationImps(AbstractImps):
     """
@@ -30,15 +24,6 @@ class StackManipulationImps(AbstractImps):
         "positive": r"\s[\s\t]+\n",
         "negative": r"\t[\s\t]+\n",
     }
-
-    def check_token(self) -> bool:
-        return super().check_token()
-
-    def process(self) -> str:
-        for code, token in self.tokens_to_actions.items():
-            if self._code.startswith(code):
-                self._code = self._code[len(code) :]
-                yield token
 
 
 class ArithmeticImps(AbstractImps):
