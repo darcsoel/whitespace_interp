@@ -3,17 +3,11 @@ from typing import Any, Optional, Union
 
 
 @dataclass
-class NumberToken:
+class InputValueToken:
     """
     Entity for number
     """
 
-    value: int
-    length: int
-
-
-@dataclass
-class LabelToken:
     value: str
     length: int
 
@@ -89,38 +83,22 @@ class WhitespaceParser:
         return "".join(without_comments)
 
     @staticmethod
-    def parse_number(code: str) -> Optional[NumberToken]:
+    def parse_input(code: str) -> Optional[InputValueToken]:
         if not code:
             return None
 
-        sign = None
-        binary_number: list[str] = []
+        binary_representation: list[str] = []
 
         for char in code:
-            if sign is None:
-                if char == "\t":
-                    sign = -1
-                elif char == " ":
-                    sign = 1
-                else:
-                    break
-            else:
-                if char == "\n":
-                    break
+            if char == "\n":
+                break
 
-                if char == " ":
-                    binary_number.append("0")
-                elif char == "\t":
-                    binary_number.append("1")
+            if char == " ":
+                binary_representation.append("0")
+            elif char == "\t":
+                binary_representation.append("1")
 
-        if not sign:
-            return None
-
-        return NumberToken(value=sign * int("".join(binary_number), 2), length=len(binary_number) + 2)
-
-    @staticmethod
-    def parse_label(code: str) -> Optional[LabelToken]:
-        return None
+        return InputValueToken(value="".join(binary_representation), length=len(binary_representation) + 1)
 
     def process(self) -> list[str | int]:
         code_string = self.remove_comments_from_code()
@@ -135,14 +113,15 @@ class WhitespaceParser:
 
                     if next_action := self.tokens_with_param.get(token):
                         if next_action == "number":
-                            if number_token := self.parse_number(code_string[start_index + shift :]):
+                            if number_token := self.parse_input(code_string[start_index + shift :]):
                                 tokens.append(number_token.value)
                                 shift += number_token.length
 
                         elif next_action == "label":
-                            if label_token := self.parse_label(code_string[start_index + shift :]):
-                                tokens.append(label_token.value)
-                                shift += label_token.length
+                            # if label_token := self.parse_label(code_string[start_index + shift :]):
+                            #     tokens.append(label_token.value)
+                            #     shift += label_token.length
+                            pass
                         else:
                             continue
 

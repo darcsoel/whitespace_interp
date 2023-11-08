@@ -49,6 +49,8 @@ class WhitespaceInterpreter:
 
     def __init__(self, tokens: list[str]) -> None:
         self._tokens = tokens
+        self._stack = []
+        self._heap = {}
 
     def execute(self) -> list:
         return []

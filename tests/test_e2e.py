@@ -43,6 +43,10 @@ def test_negative_number3() -> None:
 
 
 def test_label1() -> None:
+    # stack push
+    # A letter
+    # pop char from stack
+    # end
     output = "   \t     \t\n\t\n  \n\n\n"
     assert whitespace(output) == "A"
 
