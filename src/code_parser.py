@@ -119,13 +119,13 @@ class WhitespaceParser:
         return NumberToken(value=sign * int("".join(binary_number), 2), length=len(binary_number) + 2)
 
     @staticmethod
-    def parse_label() -> Optional[LabelToken]:
+    def parse_label(code: str) -> Optional[LabelToken]:
         return None
 
-    def process(self) -> list[str]:
+    def process(self) -> list[str | int]:
         code_string = self.remove_comments_from_code()
         start_index = 0
-        tokens = []
+        tokens: list[str | int] = []
 
         while start_index < len(code_string):
             for code, token in self.tokens_representation.items():
@@ -136,11 +136,13 @@ class WhitespaceParser:
                     if next_action := self.tokens_with_param.get(token):
                         if next_action == "number":
                             if number_token := self.parse_number(code_string[start_index + shift :]):
-                                token.push(number_token.value)
+                                tokens.append(number_token.value)
                                 shift += number_token.length
 
                         elif next_action == "label":
-                            pass
+                            if label_token := self.parse_label(code_string[start_index + shift :]):
+                                tokens.append(label_token.value)
+                                shift += label_token.length
                         else:
                             continue
 
