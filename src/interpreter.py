@@ -40,3 +40,15 @@ class IoImps(HeapAccessImps):
 
 class IoControlImps(IoImps):
     pass
+
+
+class WhitespaceInterpreter:
+    """
+    Receives tokens and builds AST.
+    """
+
+    def __init__(self, tokens: list[str]) -> None:
+        self._tokens = tokens
+
+    def execute(self) -> list:
+        return []
