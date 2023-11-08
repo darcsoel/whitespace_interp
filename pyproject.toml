@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "repo_template"
+name = "whitespace_interpreter"
 version = "0.1.0"
-description = "Template description"
+description = "Whitespace interpreter - simpliest programming language."
 authors = ["Ross <rostikvunarchuk@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.11"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1.2"
@@ -39,10 +39,12 @@ include_trailing_comma = true
 
 [tool.pylint.master]
 fail-under = 9.0
+init-hook="import sys; sys.path.append('src/')"
+
 
 [tool.pylint]
 max-line-length = 120
-disable=["C0114"]
+disable=["C0114", "C0116"]
 
 [tool.bandit]
 tests = ["B201", "B301"]
@@ -55,3 +57,10 @@ warn_unused_configs = true
 no_implicit_optional = true
 check_untyped_defs = true
 show_error_codes = true
+
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+pythonpath = "src/"
+testpaths = "tests"
