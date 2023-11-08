@@ -19,6 +19,6 @@ def test_binary_negative_number_parser() -> None:
     assert parsed == NumberToken(value=-1, length=3)
 
 
-def test_label_parser():
+def test_label_parser() -> None:
     label = ""
     parsed = WhitespaceParser.parse_label(label)

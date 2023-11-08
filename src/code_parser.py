@@ -52,8 +52,8 @@ class WhitespaceParser:
         "\n\t\n": "end_subr",
         "\n\n\n": "end",
         # IO
-        "\t\n  ": "stack_pop",
-        "\t\n \t": "stack_pop_n",
+        "\t\n  ": "stack_pop_char",
+        "\t\n \t": "stack_pop_number",
         "\t\n\t ": "read_char_stack_push",
         "\t\n\t\t": "read_num_stack_push",
     }

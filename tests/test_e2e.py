@@ -4,6 +4,10 @@ from main import whitespace
 
 
 def test_positive_number1() -> None:
+    # stack push
+    # binary 1
+    # stack push number
+    # end
     output = "   \t\n\t\n \t\n\n\n"
     assert whitespace(output) == "1"
 
