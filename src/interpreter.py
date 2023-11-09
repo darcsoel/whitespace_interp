@@ -12,4 +12,4 @@ class WhitespaceInterpreter:
         self._heap: dict[str, str] = {}
 
     def execute(self) -> str:
-        return []
+        return ""
