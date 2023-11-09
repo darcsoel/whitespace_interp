@@ -71,8 +71,6 @@ class WhitespaceParser:
         self._stack: list[Union[str, int]] = []
         self._heap: dict[str, Any] = {}
 
-        self._tokens: list[str] = []
-
     def remove_comments_from_code(self) -> str:
         without_comments = []
 
@@ -100,10 +98,10 @@ class WhitespaceParser:
 
         return InputValueToken(value="".join(binary_representation), length=len(binary_representation) + 1)
 
-    def process(self) -> list[str | int]:
+    def process(self) -> list[str]:
         code_string = self.remove_comments_from_code()
         start_index = 0
-        tokens: list[str | int] = []
+        tokens: list[str] = []
 
         while start_index < len(code_string):
             for code, token in self.tokens_representation.items():
@@ -112,16 +110,11 @@ class WhitespaceParser:
                     shift = len(code)
 
                     if next_action := self.tokens_with_param.get(token):
-                        if next_action == "number":
+                        if next_action in {"number", "label"}:
                             if number_token := self.parse_input(code_string[start_index + shift :]):
                                 tokens.append(number_token.value)
                                 shift += number_token.length
 
-                        elif next_action == "label":
-                            # if label_token := self.parse_label(code_string[start_index + shift :]):
-                            #     tokens.append(label_token.value)
-                            #     shift += label_token.length
-                            pass
                         else:
                             continue
 
