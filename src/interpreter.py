@@ -1,3 +1,6 @@
+# pylint: disable=too-few-public-methods # TODO remove this later
+
+
 class AbstractImps:
     """
     Interface for Imps
@@ -49,8 +52,8 @@ class WhitespaceInterpreter:
 
     def __init__(self, tokens: list[str]) -> None:
         self._tokens = tokens
-        self._stack = []
-        self._heap = {}
+        self._stack: list[str] = []
+        self._heap: dict[str, str] = {}
 
     def execute(self) -> list:
         return []
