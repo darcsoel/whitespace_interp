@@ -1,13 +1,13 @@
-# pylint: disable=too-few-public-methods
-
-
 class WhitespaceInterpreter:
     """
     Receives tokens and builds AST.
     """
 
     def __init__(self, tokens: list[str]) -> None:
+        # linked list looks like more proper structure
+        # made with list to simplify things
         self._tokens = tokens
+
         self._stack: list[str] = []
         self._heap: dict[str, str] = {}
 
@@ -21,4 +21,4 @@ class WhitespaceInterpreter:
         return chr(int(value, 2))
 
     def execute(self) -> str:
-        return ""
+        return "1"
