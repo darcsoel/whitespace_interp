@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Any, Optional, Union
 
+from commands import WhitespaceTokens
+
 
 @dataclass
 class InputValueToken:
@@ -22,12 +24,12 @@ class WhitespaceParser:
 
     tokens_representation: dict[str, str] = {
         # stack
-        "  ": "stack_push",  # number
-        " \n ": "stack_duplicate",
-        " \t ": "stack_copy",  # number
-        " \n\t": "stack_swap_top_two",
-        " \n\n": "stack_discard_top",
-        " \t\n": "stack_slide_n_top_off",  # number
+        "  ": WhitespaceTokens.STACK_PUSH,
+        " \n ": WhitespaceTokens.STACK_DUPLICATE,
+        " \t ": WhitespaceTokens.STACK_COPY,
+        " \n\t": WhitespaceTokens.STACK_SWAP,
+        " \n\n": WhitespaceTokens.STACK_DISCARD_TOP,
+        " \t\n": WhitespaceTokens.STACK_SLIDE_N_TOP_OFF,
         # arithmetic
         "\t   ": "add",
         "\t  \t": "subsctract",
