@@ -7,7 +7,7 @@ class WhitespaceTokens(str, Enum):
     """
 
     STACK_PUSH = "stack_push"  # number
-    STACK_DUPLICATE = "stack_duplicate"
+    STACK_DUPLICATE = "stack_duplicate_top_item"
     STACK_COPY = "stack_copy"  # number
     STACK_SWAP = "stack_swap_top_two"
     STACK_DISCARD_TOP = "stack_discard_top"
@@ -19,7 +19,7 @@ class WhitespaceTokens(str, Enum):
     INTEGER_DIVISION = "integer_division"
     MODULO = "modulo"
     # heap access
-    HEAP_STORE = "store_in__heap"
+    HEAP_STORE = "store_in_heap"
     HEAP_RETRIEVE = "retrieve_from_heap"
     # flow control
     MARK_LOCATION = "mark_location"  # label

@@ -29,15 +29,16 @@ class WhitespaceParser:
         " \t ": WhitespaceTokens.STACK_COPY,  # number
         " \n\t": WhitespaceTokens.STACK_SWAP,
         " \n\n": WhitespaceTokens.STACK_DISCARD_TOP,
+        # remove top N below the stack top value
         " \t\n": WhitespaceTokens.STACK_SLIDE_N_TOP_OFF,  # number
-        # arithmetic
+        # arithmetic: pop top two  from stack, then do the math
         "\t   ": WhitespaceTokens.ADD,
         "\t  \t": WhitespaceTokens.SUBSCTRACT,
         "\t  \n": WhitespaceTokens.MUPLITIPLICATION,
         "\t  \t ": WhitespaceTokens.INTEGER_DIVISION,
         "\t \t\t": WhitespaceTokens.MODULO,
         # heap access
-        "\t\t ": WhitespaceTokens.HEAP_STORE,
+        "\t\t ": WhitespaceTokens.HEAP_STORE,  # pop a and b, store a at head address b
         "\t\t\t": WhitespaceTokens.HEAP_RETRIEVE,
         # flow control
         "\n  ": WhitespaceTokens.MARK_LOCATION,  # label
@@ -98,6 +99,7 @@ class WhitespaceParser:
             elif char == "\t":
                 binary_representation.append("1")
 
+        # length - token len + end symbol
         return InputValueToken(value="".join(binary_representation), length=len(binary_representation) + 1)
 
     def process(self) -> list[str]:
