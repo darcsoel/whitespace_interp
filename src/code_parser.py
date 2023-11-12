@@ -38,7 +38,7 @@ class WhitespaceParser:
         "\t  \t ": WhitespaceTokens.INTEGER_DIVISION,
         "\t \t\t": WhitespaceTokens.MODULO,
         # heap access
-        "\t\t ": WhitespaceTokens.HEAP_STORE,  # pop a and b, store a at head address b
+        "\t\t ": WhitespaceTokens.HEAP_STORE,  # pop a and b, store a at heap address b
         "\t\t\t": WhitespaceTokens.HEAP_RETRIEVE,
         # flow control
         "\n  ": WhitespaceTokens.MARK_LOCATION,  # label

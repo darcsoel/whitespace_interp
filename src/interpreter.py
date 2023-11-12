@@ -74,6 +74,9 @@ class WhitespaceInterpreter:
         return self.binary_to_char(self._stack.pop())
 
     def execute(self) -> str:
+        """
+        Iterate over tokens ane execute commands represent each of them.
+        """
 
         for index, token in enumerate(self._tokens):
             # stack operations
