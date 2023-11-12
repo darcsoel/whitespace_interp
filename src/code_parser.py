@@ -24,45 +24,45 @@ class WhitespaceParser:
 
     tokens_representation: dict[str, str] = {
         # stack
-        "  ": WhitespaceTokens.STACK_PUSH,
+        "  ": WhitespaceTokens.STACK_PUSH,  # number
         " \n ": WhitespaceTokens.STACK_DUPLICATE,
-        " \t ": WhitespaceTokens.STACK_COPY,
+        " \t ": WhitespaceTokens.STACK_COPY,  # number
         " \n\t": WhitespaceTokens.STACK_SWAP,
         " \n\n": WhitespaceTokens.STACK_DISCARD_TOP,
-        " \t\n": WhitespaceTokens.STACK_SLIDE_N_TOP_OFF,
+        " \t\n": WhitespaceTokens.STACK_SLIDE_N_TOP_OFF,  # number
         # arithmetic
-        "\t   ": "add",
-        "\t  \t": "subsctract",
-        "\t  \n": "multiplication",
-        "\t  \t ": "integer_division",
-        "\t \t\t": "modulo",
+        "\t   ": WhitespaceTokens.ADD,
+        "\t  \t": WhitespaceTokens.SUBSCTRACT,
+        "\t  \n": WhitespaceTokens.MUPLITIPLICATION,
+        "\t  \t ": WhitespaceTokens.INTEGER_DIVISION,
+        "\t \t\t": WhitespaceTokens.MODULO,
         # heap access
-        "\t\t ": "store_in__heap",
-        "\t\t\t": "retrieve_from_heap",
+        "\t\t ": WhitespaceTokens.HEAP_STORE,
+        "\t\t\t": WhitespaceTokens.HEAP_RETRIEVE,
         # flow control
-        "\n  ": "mark_location",  # label
-        "\n \t": "call_subrt",  # label
-        "\n \n": "jump",  # label
-        "\n\t ": "jump_if_zer",  # label,
-        "\n\t\t": "jump_if_neg",  # label
-        "\n\t\n": "end_subr",
-        "\n\n\n": "end",
+        "\n  ": WhitespaceTokens.MARK_LOCATION,  # label
+        "\n \t": WhitespaceTokens.CALL_SUBROUTINE,  # label
+        "\n \n": WhitespaceTokens.JUMP,  # label
+        "\n\t ": WhitespaceTokens.JUMP_IF_ZERO,  # label,
+        "\n\t\t": WhitespaceTokens.JUMO_IF_NEG,  # label
+        "\n\t\n": WhitespaceTokens.END_SUBROUTINE,
+        "\n\n\n": WhitespaceTokens.END,
         # IO
-        "\t\n  ": "stack_pop_char",
-        "\t\n \t": "stack_pop_number",
-        "\t\n\t ": "read_char_stack_push",
-        "\t\n\t\t": "read_num_stack_push",
+        "\t\n  ": WhitespaceTokens.STACK_POP_CHAR,
+        "\t\n \t": WhitespaceTokens.STACK_POP_NUMBER,
+        "\t\n\t ": WhitespaceTokens.READ_CHAR_STACK_PUSH,
+        "\t\n\t\t": WhitespaceTokens.READ_NUMBER_STACK_PUSH,
     }
 
     tokens_with_param: dict[str, str] = {
-        "stack_push": "number",
-        "stack_copy": "number",
-        "stack_slide_n_top_off": "number",
-        "mark_location": "label",
-        "call_subrt": "label",
-        "jump": "label",
-        "jump_if_zer": "label",
-        "jump_if_neg": "label",
+        WhitespaceTokens.STACK_PUSH: "number",
+        WhitespaceTokens.STACK_COPY: "number",
+        WhitespaceTokens.STACK_SLIDE_N_TOP_OFF: "number",
+        WhitespaceTokens.MARK_LOCATION: "label",
+        WhitespaceTokens.CALL_SUBROUTINE: "label",
+        WhitespaceTokens.JUMP: "label",
+        WhitespaceTokens.JUMP_IF_ZERO: "label",
+        WhitespaceTokens.JUMO_IF_NEG: "label",
     }
 
     label = r"[\t\s][\s\t]+\n"

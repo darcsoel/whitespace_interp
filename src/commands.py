@@ -23,7 +23,7 @@ class WhitespaceTokens(str, Enum):
     HEAP_RETRIEVE = "retrieve_from_heap"
     # flow control
     MARK_LOCATION = "mark_location"  # label
-    CALL_SUBSCTRING = "call_subrt"  # label
+    CALL_SUBROUTINE = "call_subrt"  # label
     JUMP = "jump"  # label
     JUMP_IF_ZERO = "jump_if_zer"  # label,
     JUMO_IF_NEG = "jump_if_neg"  # label
