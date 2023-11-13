@@ -78,6 +78,8 @@ class WhitespaceInterpreter:
         Iterate over tokens ane execute commands represent each of them.
         """
 
+        output = []
+
         for index, token in enumerate(self._tokens):
             # stack operations
             if token == WhitespaceTokens.STACK_PUSH:
@@ -133,5 +135,38 @@ class WhitespaceInterpreter:
                 self._stack.push(modulo)
 
             # heap access operations
+            elif token == WhitespaceTokens.HEAP_STORE:
+                value = self._stack.pop()
+                key = self._stack.pop()
 
-        return "1"
+                self._heap[key] = value
+            elif token == WhitespaceTokens.HEAP_RETRIEVE:
+                value = self._stack.pop()
+                self._stack.push(self._heap[value])
+                del self._heap[value]
+
+            # flow control operations
+            elif token == WhitespaceTokens.MARK_LOCATION:
+                pass
+            elif token == WhitespaceTokens.CALL_SUBROUTINE:
+                pass
+            elif token == WhitespaceTokens.JUMP:
+                pass
+            elif token == WhitespaceTokens.JUMP_IF_ZERO:
+                pass
+            elif token == WhitespaceTokens.JUMO_IF_NEG:
+                pass
+            elif token == WhitespaceTokens.END_SUBROUTINE:
+                pass
+            elif token == WhitespaceTokens.END:
+                pass
+
+            # IO operations
+            elif token == WhitespaceTokens.STACK_POP_CHAR:
+                char = self.pop_character_from_stack()
+                output.append(char)
+            elif token == WhitespaceTokens.STACK_POP_NUMBER:
+                number = self.pop_number_from_stack()
+                output.append(str(number))
+
+        return "".join(output)
