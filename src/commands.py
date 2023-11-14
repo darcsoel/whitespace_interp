@@ -34,3 +34,41 @@ class WhitespaceTokens(str, Enum):
     STACK_POP_NUMBER = "stack_pop_number"
     READ_CHAR_STACK_PUSH = "read_char_stack_push"
     READ_NUMBER_STACK_PUSH = "read_num_stack_push"
+
+
+stack_commands = {
+    WhitespaceTokens.STACK_PUSH,
+    WhitespaceTokens.STACK_DUPLICATE,
+    WhitespaceTokens.STACK_COPY,
+    WhitespaceTokens.STACK_SWAP,
+    WhitespaceTokens.STACK_DISCARD_TOP,
+    WhitespaceTokens.STACK_SLIDE_N_TOP_OFF,
+}
+
+arithmetic_commands = {
+    WhitespaceTokens.ADD,
+    WhitespaceTokens.SUBSCTRACT,
+    WhitespaceTokens.MUPLITIPLICATION,
+    WhitespaceTokens.INTEGER_DIVISION,
+    WhitespaceTokens.MODULO,
+}
+
+heap_access_commands = {WhitespaceTokens.HEAP_STORE, WhitespaceTokens.HEAP_RETRIEVE}
+
+
+flow_control_commands = {
+    WhitespaceTokens.MARK_LOCATION,
+    WhitespaceTokens.CALL_SUBROUTINE,
+    WhitespaceTokens.JUMP,
+    WhitespaceTokens.JUMP_IF_ZERO,
+    WhitespaceTokens.JUMO_IF_NEG,
+    WhitespaceTokens.END_SUBROUTINE,
+    WhitespaceTokens.END,
+}
+
+io_commands = {
+    WhitespaceTokens.STACK_POP_CHAR,
+    WhitespaceTokens.STACK_POP_NUMBER,
+    WhitespaceTokens.READ_CHAR_STACK_PUSH,
+    WhitespaceTokens.READ_NUMBER_STACK_PUSH,
+}

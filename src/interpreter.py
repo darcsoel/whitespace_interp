@@ -1,4 +1,11 @@
-from commands import WhitespaceTokens
+from commands import (
+    WhitespaceTokens,
+    arithmetic_commands,
+    flow_control_commands,
+    heap_access_commands,
+    io_commands,
+    stack_commands,
+)
 
 
 class Stack:
@@ -30,7 +37,7 @@ class WhitespaceInterpreter:
         self._tokens = tokens
 
         self._stack = Stack()
-        self._heap: dict[str, str] = {}
+        self._heap: dict[str, str | int] = {}
 
     @staticmethod
     def binary_to_number(value: str) -> int:
@@ -73,6 +80,97 @@ class WhitespaceInterpreter:
     def pop_character_from_stack(self) -> str:
         return self.binary_to_char(self._stack.pop())
 
+    def _execute_stack_commands(self, index: int, token: str) -> None:
+        # stack operations
+        if token == WhitespaceTokens.STACK_PUSH:
+            self._stack.push(self._tokens[index + 1])
+        elif token == WhitespaceTokens.STACK_DUPLICATE:
+            top_value = self._stack.pop()
+            self._stack.push(top_value)
+            self._stack.push(top_value)
+        elif token == WhitespaceTokens.STACK_COPY:
+            stack_item = self._stack.get(self.binary_to_number(self._tokens[index + 1]))
+            self._stack.push(stack_item)
+        elif token == WhitespaceTokens.STACK_SWAP:
+            top1 = self._stack.pop()
+            top2 = self._stack.pop()
+
+            self._stack.push(top1)
+            self._stack.push(top2)
+        elif token == WhitespaceTokens.STACK_DISCARD_TOP:
+            self._stack.pop()
+        elif token == WhitespaceTokens.STACK_SLIDE_N_TOP_OFF:
+            number = self.binary_to_number(self._tokens[index + 1])
+            top_elem = self._stack.pop()
+
+            while number:
+                self._stack.pop()
+                number -= 1
+
+            self._stack.push(top_elem)
+
+    def _execute_arithmetic_commands(self, index: int, token: str) -> None:
+        if token == WhitespaceTokens.ADD:
+            first = self.pop_number_from_stack()
+            second = self.pop_number_from_stack()
+            self._stack.push(first + second)
+        elif token == WhitespaceTokens.SUBSCTRACT:
+            first = self.pop_number_from_stack()
+            second = self.pop_number_from_stack()
+            self._stack.push(second - first)
+        elif token == WhitespaceTokens.MUPLITIPLICATION:
+            first = self.pop_number_from_stack()
+            second = self.pop_number_from_stack()
+            self._stack.push(first * second)
+        elif token == WhitespaceTokens.INTEGER_DIVISION:
+            first = self.pop_number_from_stack()
+            second = self.pop_number_from_stack()
+            self._stack.push(second // first)
+        elif token == WhitespaceTokens.MODULO:
+            first = self.pop_number_from_stack()
+            second = self.pop_number_from_stack()
+
+            if not (modulo := second % first):
+                raise ValueError("Not valid result of modulo operation.")
+            self._stack.push(modulo)
+
+    def _execute_heap_access_commands(self, index: int, token: str) -> None:
+        if token == WhitespaceTokens.HEAP_STORE:
+            value = self._stack.pop()
+            key = self._stack.pop()
+
+            self._heap[key] = value
+        elif token == WhitespaceTokens.HEAP_RETRIEVE:
+            value = self._stack.pop()
+            self._stack.push(self._heap[value])
+            del self._heap[value]
+
+    def _execute_flow_control_commands(self, index: int, token: str) -> None:
+        if token == WhitespaceTokens.MARK_LOCATION:
+            self._heap[token] = index
+        elif token == WhitespaceTokens.CALL_SUBROUTINE:
+            pass
+        elif token == WhitespaceTokens.JUMP:
+            pass
+        elif token == WhitespaceTokens.JUMP_IF_ZERO:
+            pass
+        elif token == WhitespaceTokens.JUMO_IF_NEG:
+            pass
+        elif token == WhitespaceTokens.END_SUBROUTINE:
+            pass
+        elif token == WhitespaceTokens.END:
+            pass
+
+    def _execute_io_commands(self, index: int, token: str) -> str | None:
+        if token == WhitespaceTokens.STACK_POP_CHAR:
+            char = self.pop_character_from_stack()
+            return char
+        elif token == WhitespaceTokens.STACK_POP_NUMBER:
+            number = self.pop_number_from_stack()
+            return str(number)
+
+        return None
+
     def execute(self) -> str:
         """
         Iterate over tokens ane execute commands represent each of them.
@@ -81,92 +179,15 @@ class WhitespaceInterpreter:
         output = []
 
         for index, token in enumerate(self._tokens):
-            # stack operations
-            if token == WhitespaceTokens.STACK_PUSH:
-                self._stack.push(self._tokens[index + 1])
-            elif token == WhitespaceTokens.STACK_DUPLICATE:
-                top_value = self._stack.pop()
-                self._stack.push(top_value)
-                self._stack.push(top_value)
-            elif token == WhitespaceTokens.STACK_COPY:
-                stack_item = self._stack.get(self.binary_to_number(self._tokens[index + 1]))
-                self._stack.push(stack_item)
-            elif token == WhitespaceTokens.STACK_SWAP:
-                top1 = self._stack.pop()
-                top2 = self._stack.pop()
-
-                self._stack.push(top1)
-                self._stack.push(top2)
-            elif token == WhitespaceTokens.STACK_DISCARD_TOP:
-                self._stack.pop()
-            elif token == WhitespaceTokens.STACK_SLIDE_N_TOP_OFF:
-                number = self.binary_to_number(self._tokens[index + 1])
-                top_elem = self._stack.pop()
-
-                while number:
-                    self._stack.pop()
-                    number -= 1
-
-                self._stack.push(top_elem)
-
-            # arithmetic operations
-            elif token == WhitespaceTokens.ADD:
-                first = self.pop_number_from_stack()
-                second = self.pop_number_from_stack()
-                self._stack.push(first + second)
-            elif token == WhitespaceTokens.SUBSCTRACT:
-                first = self.pop_number_from_stack()
-                second = self.pop_number_from_stack()
-                self._stack.push(second - first)
-            elif token == WhitespaceTokens.MUPLITIPLICATION:
-                first = self.pop_number_from_stack()
-                second = self.pop_number_from_stack()
-                self._stack.push(first * second)
-            elif token == WhitespaceTokens.INTEGER_DIVISION:
-                first = self.pop_number_from_stack()
-                second = self.pop_number_from_stack()
-                self._stack.push(second // first)
-            elif token == WhitespaceTokens.MODULO:
-                first = self.pop_number_from_stack()
-                second = self.pop_number_from_stack()
-
-                if not (modulo := second % first):
-                    raise ValueError("Not valid result of modulo operation.")
-                self._stack.push(modulo)
-
-            # heap access operations
-            elif token == WhitespaceTokens.HEAP_STORE:
-                value = self._stack.pop()
-                key = self._stack.pop()
-
-                self._heap[key] = value
-            elif token == WhitespaceTokens.HEAP_RETRIEVE:
-                value = self._stack.pop()
-                self._stack.push(self._heap[value])
-                del self._heap[value]
-
-            # flow control operations
-            elif token == WhitespaceTokens.MARK_LOCATION:
-                pass
-            elif token == WhitespaceTokens.CALL_SUBROUTINE:
-                pass
-            elif token == WhitespaceTokens.JUMP:
-                pass
-            elif token == WhitespaceTokens.JUMP_IF_ZERO:
-                pass
-            elif token == WhitespaceTokens.JUMO_IF_NEG:
-                pass
-            elif token == WhitespaceTokens.END_SUBROUTINE:
-                pass
-            elif token == WhitespaceTokens.END:
-                pass
-
-            # IO operations
-            elif token == WhitespaceTokens.STACK_POP_CHAR:
-                char = self.pop_character_from_stack()
-                output.append(char)
-            elif token == WhitespaceTokens.STACK_POP_NUMBER:
-                number = self.pop_number_from_stack()
-                output.append(str(number))
+            if token in stack_commands:
+                self._execute_stack_commands(index, token)
+            elif token in arithmetic_commands:
+                self._execute_arithmetic_commands(index, token)
+            elif token in heap_access_commands:
+                self._execute_heap_access_commands(index, token)
+            elif token in flow_control_commands:
+                self._execute_flow_control_commands(index, token)
+            elif token in io_commands:
+                output.append(self._execute_io_commands(index, token))
 
         return "".join(output)
