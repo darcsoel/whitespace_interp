@@ -108,6 +108,8 @@ class WhitespaceInterpreter:
                 number -= 1
 
             self._stack.push(top_elem)
+        else:
+            raise RuntimeError("Unknown stack command")
 
     def _execute_arithmetic_commands(self, index: int, token: str) -> None:
         if token == WhitespaceTokens.ADD:
@@ -133,6 +135,8 @@ class WhitespaceInterpreter:
             if not (modulo := second % first):
                 raise ValueError("Not valid result of modulo operation.")
             self._stack.push(modulo)
+        else:
+            raise RuntimeError("Unknown arithmetic command")
 
     def _execute_heap_access_commands(self, index: int, token: str) -> None:
         if token == WhitespaceTokens.HEAP_STORE:
@@ -144,12 +148,17 @@ class WhitespaceInterpreter:
             value = self._stack.pop()
             self._stack.push(self._heap[value])
             del self._heap[value]
+        else:
+            raise RuntimeError("Unknown heap access command")
 
-    def _execute_flow_control_commands(self, index: int, token: str) -> None:
+    def _execute_flow_control_commands(self, index: int, token: str) -> int | None:
         if token == WhitespaceTokens.MARK_LOCATION:
             self._heap[token] = index
         elif token == WhitespaceTokens.CALL_SUBROUTINE:
             pass
+            # location = self._stack.get(index + 1)
+
+            # return self._heap[location]
         elif token == WhitespaceTokens.JUMP:
             pass
         elif token == WhitespaceTokens.JUMP_IF_ZERO:
@@ -159,17 +168,21 @@ class WhitespaceInterpreter:
         elif token == WhitespaceTokens.END_SUBROUTINE:
             pass
         elif token == WhitespaceTokens.END:
-            pass
+            return None
+        else:
+            raise RuntimeError("Unknown flow control command")
 
-    def _execute_io_commands(self, index: int, token: str) -> str | None:
+        return None
+
+    def _execute_io_commands(self, index: int, token: str) -> str:
         if token == WhitespaceTokens.STACK_POP_CHAR:
             char = self.pop_character_from_stack()
             return char
         elif token == WhitespaceTokens.STACK_POP_NUMBER:
             number = self.pop_number_from_stack()
             return str(number)
-
-        return None
+        else:
+            raise RuntimeError("Unknown IO command")
 
     def execute(self) -> str:
         """
@@ -177,8 +190,12 @@ class WhitespaceInterpreter:
         """
 
         output = []
+        index = 0
 
-        for index, token in enumerate(self._tokens):
+        while index < len(self._tokens):
+            # not beautiful desicion, but we need possibility to make jump operations
+            token = self._tokens[index]
+
             if token in stack_commands:
                 self._execute_stack_commands(index, token)
             elif token in arithmetic_commands:
@@ -186,8 +203,11 @@ class WhitespaceInterpreter:
             elif token in heap_access_commands:
                 self._execute_heap_access_commands(index, token)
             elif token in flow_control_commands:
-                self._execute_flow_control_commands(index, token)
+                if result := self._execute_flow_control_commands(index, token):
+                    index = result
             elif token in io_commands:
                 output.append(self._execute_io_commands(index, token))
+
+            index += 1
 
         return "".join(output)
