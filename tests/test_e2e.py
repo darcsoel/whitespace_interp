@@ -1,61 +1,45 @@
-# # pylint:disable=missing-module-docstring
+# pylint:disable=missing-module-docstring
 
-# from main import whitespace
+import pytest
 
-
-# def test_positive_number1():
-#     # stack push
-#     # binary 1
-#     # stack push number
-#     # end
-#     output = "   \t\n\t\n \t\n\n\n"
-#     assert whitespace(output) == "1"
+from main import whitespace
 
 
-# def test_positive_number2():
-#     output = "   \t \n\t\n \t\n\n\n"
-#     assert whitespace(output) == "2"
+@pytest.mark.parametrize(
+    "code, result",
+    [
+        ("   \t\n\t\n \t\n\n\n", "1"),
+        ("   \t \n\t\n \t\n\n\n", "2"),
+        ("   \t\t\n\t\n \t\n\n\n", "3"),
+        ("    \n\t\n \t\n\n\n", "0"),
+    ],
+)
+def test_positive_number(code, result):
+    # first pair explanation
+    # stack push
+    # binary 1
+    # stack pop number
+    # end
+    assert whitespace(code) == result
 
 
-# def test_positive_number3():
-#     output = "   \t\t\n\t\n \t\n\n\n"
-#     assert whitespace(output) == "3"
+@pytest.mark.parametrize(
+    "code, result",
+    [("  \t\t\n\t\n \t\n\n\n", "-1"), ("  \t\t \n\t\n \t\n\n\n", "-2"), ("  \t\t\t\n\t\n \t\n\n\n", "-3")],
+)
+def test_negative_number(code, result):
+    assert whitespace(code) == result
 
 
-# def test_positive_number4():
-#     output = "    \n\t\n \t\n\n\n"
-#     assert whitespace(output) == "0"
+@pytest.mark.parametrize(
+    "code, result",
+    [("   \t     \t\n\t\n  \n\n\n", "A"), ("   \t    \t \n\t\n  \n\n\n", "B"), ("   \t    \t\t\n\t\n  \n\n\n", "C")],
+)
+def test_label(code, result):
+    # first pair explanation
+    # stack push
+    # A letter
+    # pop char from stack
+    # end
 
-
-# def test_negative_number1():
-#     output = "  \t\t\n\t\n \t\n\n\n"
-#     assert whitespace(output) == "-1"
-
-
-# def test_negative_number2():
-#     output = "  \t\t \n\t\n \t\n\n\n"
-#     assert whitespace(output) == "-2"
-
-
-# def test_negative_number3():
-#     output = "  \t\t\t\n\t\n \t\n\n\n"
-#     assert whitespace(output) == "-3"
-
-
-# def test_label1():
-#     # stack push
-#     # A letter
-#     # pop char from stack
-#     # end
-#     output = "   \t     \t\n\t\n  \n\n\n"
-#     assert whitespace(output) == "A"
-
-
-# def test_label2():
-#     output = "   \t    \t \n\t\n  \n\n\n"
-#     assert whitespace(output) == "B"
-
-
-# def test_label3():
-#     output = "   \t    \t\t\n\t\n  \n\n\n"
-#     assert whitespace(output) == "C"
+    assert whitespace(code) == result

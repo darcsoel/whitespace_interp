@@ -2,4 +2,4 @@ format:
 	pre-commit run --all-files
 
 test:
-	pytest
+	pytest -vvv --cov=src tests/

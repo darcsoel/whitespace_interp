@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Any, Optional, Union
 
+from commands import WhitespaceTokens
+
 
 @dataclass
 class InputValueToken:
@@ -22,45 +24,46 @@ class WhitespaceParser:
 
     tokens_representation: dict[str, str] = {
         # stack
-        "  ": "stack_push",  # number
-        " \n ": "stack_duplicate",
-        " \t ": "stack_copy",  # number
-        " \n\t": "stack_swap_top_two",
-        " \n\n": "stack_discard_top",
-        " \t\n": "stack_slide_n_top_off",  # number
-        # arithmetic
-        "\t   ": "add",
-        "\t  \t": "subsctract",
-        "\t  \n": "multiplication",
-        "\t  \t ": "integer_division",
-        "\t \t\t": "modulo",
+        "  ": WhitespaceTokens.STACK_PUSH,  # number
+        " \n ": WhitespaceTokens.STACK_DUPLICATE,
+        " \t ": WhitespaceTokens.STACK_COPY,  # number
+        " \n\t": WhitespaceTokens.STACK_SWAP,
+        " \n\n": WhitespaceTokens.STACK_DISCARD_TOP,
+        # remove top N below the stack top value
+        " \t\n": WhitespaceTokens.STACK_SLIDE_N_TOP_OFF,  # number
+        # arithmetic: pop top two  from stack, then do the math
+        "\t   ": WhitespaceTokens.ADD,
+        "\t  \t": WhitespaceTokens.SUBSCTRACT,
+        "\t  \n": WhitespaceTokens.MUPLITIPLICATION,
+        "\t  \t ": WhitespaceTokens.INTEGER_DIVISION,
+        "\t \t\t": WhitespaceTokens.MODULO,
         # heap access
-        "\t\t ": "store_in__heap",
-        "\t\t\t": "retrieve_from_heap",
+        "\t\t ": WhitespaceTokens.HEAP_STORE,  # pop a and b, store a at heap address b
+        "\t\t\t": WhitespaceTokens.HEAP_RETRIEVE,
         # flow control
-        "\n  ": "mark_location",  # label
-        "\n \t": "call_subrt",  # label
-        "\n \n": "jump",  # label
-        "\n\t ": "jump_if_zer",  # label,
-        "\n\t\t": "jump_if_neg",  # label
-        "\n\t\n": "end_subr",
-        "\n\n\n": "end",
+        "\n  ": WhitespaceTokens.MARK_LOCATION,  # label
+        "\n \t": WhitespaceTokens.CALL_SUBROUTINE,  # label
+        "\n \n": WhitespaceTokens.JUMP,  # label
+        "\n\t ": WhitespaceTokens.JUMP_IF_ZERO,  # label,
+        "\n\t\t": WhitespaceTokens.JUMO_IF_NEG,  # label
+        "\n\t\n": WhitespaceTokens.END_SUBROUTINE,
+        "\n\n\n": WhitespaceTokens.END,
         # IO
-        "\t\n  ": "stack_pop_char",
-        "\t\n \t": "stack_pop_number",
-        "\t\n\t ": "read_char_stack_push",
-        "\t\n\t\t": "read_num_stack_push",
+        "\t\n  ": WhitespaceTokens.STACK_POP_CHAR,
+        "\t\n \t": WhitespaceTokens.STACK_POP_NUMBER,
+        "\t\n\t ": WhitespaceTokens.READ_CHAR_STACK_PUSH,
+        "\t\n\t\t": WhitespaceTokens.READ_NUMBER_STACK_PUSH,
     }
 
     tokens_with_param: dict[str, str] = {
-        "stack_push": "number",
-        "stack_copy": "number",
-        "stack_slide_n_top_off": "number",
-        "mark_location": "label",
-        "call_subrt": "label",
-        "jump": "label",
-        "jump_if_zer": "label",
-        "jump_if_neg": "label",
+        WhitespaceTokens.STACK_PUSH: "number",
+        WhitespaceTokens.STACK_COPY: "number",
+        WhitespaceTokens.STACK_SLIDE_N_TOP_OFF: "number",
+        WhitespaceTokens.MARK_LOCATION: "label",
+        WhitespaceTokens.CALL_SUBROUTINE: "label",
+        WhitespaceTokens.JUMP: "label",
+        WhitespaceTokens.JUMP_IF_ZERO: "label",
+        WhitespaceTokens.JUMO_IF_NEG: "label",
     }
 
     label = r"[\t\s][\s\t]+\n"
@@ -96,6 +99,7 @@ class WhitespaceParser:
             elif char == "\t":
                 binary_representation.append("1")
 
+        # length - token len + end symbol
         return InputValueToken(value="".join(binary_representation), length=len(binary_representation) + 1)
 
     def process(self) -> list[str]:
