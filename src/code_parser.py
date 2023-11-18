@@ -113,14 +113,10 @@ class WhitespaceParser:
                     tokens.append(token)
                     shift = len(code)
 
-                    if next_action := self.tokens_with_param.get(token):
-                        if next_action in {"number", "label"}:
-                            if number_token := self.parse_input(code_string[start_index + shift :]):
-                                tokens.append(number_token.value)
-                                shift += number_token.length
-
-                        else:
-                            continue
+                    if self.tokens_with_param.get(token):
+                        if number_token := self.parse_input(code_string[start_index + shift :]):
+                            tokens.append(number_token.value)
+                            shift += number_token.length
 
                     start_index += shift
 
