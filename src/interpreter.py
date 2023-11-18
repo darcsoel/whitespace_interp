@@ -37,7 +37,8 @@ class WhitespaceInterpreter:
         self._tokens = tokens
 
         self._stack = Stack()
-        self._heap: dict[str, str | int] = {}
+        self._heap: dict[str, str] = {}
+        self._subroutine_last_location: int | None = None
 
     @staticmethod
     def binary_to_number(value: str) -> int:
@@ -111,7 +112,7 @@ class WhitespaceInterpreter:
         else:
             raise RuntimeError("Unknown stack command")
 
-    def _execute_arithmetic_commands(self, index: int, token: str) -> None:
+    def _execute_arithmetic_commands(self, token: str) -> None:
         if token == WhitespaceTokens.ADD:
             first = self.pop_number_from_stack()
             second = self.pop_number_from_stack()
@@ -138,7 +139,7 @@ class WhitespaceInterpreter:
         else:
             raise RuntimeError("Unknown arithmetic command")
 
-    def _execute_heap_access_commands(self, index: int, token: str) -> None:
+    def _execute_heap_access_commands(self, token: str) -> None:
         if token == WhitespaceTokens.HEAP_STORE:
             value = self._stack.pop()
             key = self._stack.pop()
@@ -153,20 +154,27 @@ class WhitespaceInterpreter:
 
     def _execute_flow_control_commands(self, index: int, token: str) -> int | None:
         if token == WhitespaceTokens.MARK_LOCATION:
-            self._heap[token] = index
+            self._heap[token] = str(index)
         elif token == WhitespaceTokens.CALL_SUBROUTINE:
-            pass
-            # location = self._stack.get(index + 1)
-
-            # return self._heap[location]
+            # one subroutine at the time
+            # didnt find info about nested subroutines calls
+            location = self._stack.get(index + 1)
+            self._subroutine_last_location = index
+            return self.binary_to_number(location)
         elif token == WhitespaceTokens.JUMP:
-            pass
+            location = self._stack.get(index + 1)
         elif token == WhitespaceTokens.JUMP_IF_ZERO:
-            pass
+            trigger = self.pop_number_from_stack()
+            location = self._stack.get(index + 1)
+            return self.binary_to_number(location) if trigger == 0 else None
         elif token == WhitespaceTokens.JUMO_IF_NEG:
-            pass
+            trigger = self.pop_number_from_stack()
+            location = self._stack.get(index + 1)
+            return self.binary_to_number(location) if trigger < 0 else None
         elif token == WhitespaceTokens.END_SUBROUTINE:
-            pass
+            if return_to := self._subroutine_last_location:
+                self._subroutine_last_location = None
+                return return_to
         elif token == WhitespaceTokens.END:
             return None
         else:
@@ -174,7 +182,7 @@ class WhitespaceInterpreter:
 
         return None
 
-    def _execute_io_commands(self, index: int, token: str) -> str:
+    def _execute_io_commands(self, token: str) -> str:
         if token == WhitespaceTokens.STACK_POP_CHAR:
             char = self.pop_character_from_stack()
             return char
@@ -199,14 +207,14 @@ class WhitespaceInterpreter:
             if token in stack_commands:
                 self._execute_stack_commands(index, token)
             elif token in arithmetic_commands:
-                self._execute_arithmetic_commands(index, token)
+                self._execute_arithmetic_commands(token)
             elif token in heap_access_commands:
-                self._execute_heap_access_commands(index, token)
+                self._execute_heap_access_commands(token)
             elif token in flow_control_commands:
                 if result := self._execute_flow_control_commands(index, token):
                     index = result
             elif token in io_commands:
-                output.append(self._execute_io_commands(index, token))
+                output.append(self._execute_io_commands(token))
 
             index += 1
 

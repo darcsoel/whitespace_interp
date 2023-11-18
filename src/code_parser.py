@@ -104,6 +104,10 @@ class WhitespaceParser:
 
     def process(self) -> list[str]:
         code_string = self.remove_comments_from_code()
+
+        if not code_string:
+            raise ValueError("Empty code sould not be parsed")
+
         start_index = 0
         tokens: list[str] = []
 
@@ -113,14 +117,10 @@ class WhitespaceParser:
                     tokens.append(token)
                     shift = len(code)
 
-                    if next_action := self.tokens_with_param.get(token):
-                        if next_action in {"number", "label"}:
-                            if number_token := self.parse_input(code_string[start_index + shift :]):
-                                tokens.append(number_token.value)
-                                shift += number_token.length
-
-                        else:
-                            continue
+                    if self.tokens_with_param.get(token):
+                        if number_token := self.parse_input(code_string[start_index + shift :]):
+                            tokens.append(number_token.value)
+                            shift += number_token.length
 
                     start_index += shift
 
