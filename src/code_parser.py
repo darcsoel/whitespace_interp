@@ -104,6 +104,10 @@ class WhitespaceParser:
 
     def process(self) -> list[str]:
         code_string = self.remove_comments_from_code()
+
+        if not code_string:
+            raise ValueError("Empty code sould not be parsed")
+
         start_index = 0
         tokens: list[str] = []
 
