@@ -24,6 +24,9 @@ class Stack:
     def push(self, value: str | int) -> None:
         self._values.append(str(value))
 
+    def get_from_top(self, index: int) -> str:
+        return self._values[len(self._values) - index]
+
     def get(self, index: int) -> str:
         return self._values[index]
 
@@ -94,7 +97,7 @@ class WhitespaceInterpreter:
             self._stack.push(top_value)
             self._stack.push(top_value)
         elif token == WhitespaceTokens.STACK_COPY:
-            stack_item = self._stack.get(self.binary_to_number(self._tokens[index + 1]))
+            stack_item = self._stack.get_from_top(self.binary_to_number(self._tokens[index + 1]))
             self._stack.push(stack_item)
         elif token == WhitespaceTokens.STACK_SWAP:
             top1 = self._stack.pop()

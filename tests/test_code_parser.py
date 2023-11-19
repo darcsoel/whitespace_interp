@@ -29,6 +29,47 @@ def test_label_parser():
         ("   \t     \t\n\t\n  \n\n\n", ["stack_push", "01000001", "stack_pop_char", "end"]),
     ],
 )
-def test_parse_tokens_for_positive_number_1_push(whitespace_code, tokens):
+def test_parse_tokens_for_positive_number_push(whitespace_code, tokens):
     parser = WhitespaceParser(whitespace_code)
     assert parser.process() == tokens
+
+
+@pytest.mark.parametrize(
+    "code, tokens",
+    [
+        (
+            "   \t\n   \t \n   \t\t\n \t  \t \n\t\n \t\n\n\n",
+            [
+                "stack_push",
+                "01",
+                "stack_push",
+                "010",
+                "stack_push",
+                "011",
+                "stack_copy",
+                "010",
+                "stack_pop_number",
+                "end",
+            ],
+        ),
+        (
+            "   \t\n   \t \n   \t\t\n \t  \t\n\t\n \t\n\n\n",
+            [
+                "stack_push",
+                "01",
+                "stack_push",
+                "010",
+                "stack_push",
+                "011",
+                "stack_copy",
+                "01",
+                "stack_pop_number",
+                "end",
+            ],
+        ),
+    ],
+)
+def test_stack_operations(code, tokens):
+    parser = WhitespaceParser(code)
+    parsed_tokens = parser.process()
+    assert parsed_tokens == tokens
