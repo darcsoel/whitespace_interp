@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 from commands import (
     WhitespaceTokens,
     arithmetic_commands,
@@ -41,6 +43,7 @@ class WhitespaceInterpreter:
         self._subroutine_last_location: int | None = None
 
     @staticmethod
+    @lru_cache
     def binary_to_number(value: str) -> int:
         """
         Parse binary to decimal.
@@ -65,6 +68,7 @@ class WhitespaceInterpreter:
         return sign * int(value[1:], 2)
 
     @staticmethod
+    @lru_cache
     def binary_to_char(value: str) -> str:
         if not value:
             return ""

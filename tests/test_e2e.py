@@ -43,3 +43,21 @@ def test_label(code, result):
     # end
 
     assert whitespace(code) == result
+
+
+@pytest.mark.parametrize(
+    "code, result",
+    [
+        ("sadaqefdgdgdfgf   \t     \t\n\t\n  \n\n\n", "A"),
+        ("dfgdgrtretbcbvcb   \t    \t \n\t\n  \n\n\n", "B"),
+        ("asddqqebcvbcvb   \t    \t\t\n\t\n  \n\n\n", "C"),
+    ],
+)
+def test_label_with_comments(code, result):
+    # first pair explanation
+    # stack push
+    # A letter
+    # pop char from stack
+    # end
+
+    assert whitespace(code) == result

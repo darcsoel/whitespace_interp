@@ -113,7 +113,7 @@ class WhitespaceParser:
 
         while start_index < len(code_string):
             for code, token in self.tokens_representation.items():
-                if self._code[start_index:].startswith(code):
+                if code_string[start_index:].startswith(code):
                     tokens.append(token)
                     shift = len(code)
 
