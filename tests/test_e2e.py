@@ -61,3 +61,16 @@ def test_label_with_comments(code, result):
     # end
 
     assert whitespace(code) == result
+
+
+@pytest.mark.parametrize(
+    "code, result",
+    [
+        ("   \t\n   \t \n   \t\t\n \t  \t \n\t\n \t\n\n\n", "1"),
+        ("   \t\n   \t \n   \t\t\n \t  \t\n\t\n \t\n\n\n", "3"),
+        ("  \t\t\n   \t  \n\t   \t\n \t\n\n\n", "3"),
+        ("  \t\t \n   \t  \n\t  \t\t\n \t\n\n\n", "3"),
+    ],
+)
+def test_stack_operations(code, result):
+    assert whitespace(code) == result
