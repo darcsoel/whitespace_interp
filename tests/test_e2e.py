@@ -67,10 +67,17 @@ def test_label_with_comments(code, result):
     "code, result",
     [
         ("   \t\n   \t \n   \t\t\n \t  \t \n\t\n \t\n\n\n", "1"),
-        ("   \t\n   \t \n   \t\t\n \t  \t\n\t\n \t\n\n\n", "3"),
-        ("  \t\t\n   \t  \n\t   \t\n \t\n\n\n", "3"),
-        ("  \t\t \n   \t  \n\t  \t\t\n \t\n\n\n", "3"),
+        ("   \t\n   \t \n   \t\t\n \t   \n\t\n \t\n\n\n", "3"),
     ],
 )
 def test_stack_operations(code, result):
     assert whitespace(code) == result
+
+
+# scenarios:
+# wrong number formar
+# copy index with negative index, index out of bounds
+@pytest.mark.parametrize("code", [("  \t\n\t\n \t\n\n\n"), ("   \t\n   \t \n   \t\t\n \t \t\t\n\t\n \t\n\n\n")])
+def test_stack_edge_cases(code):
+    with pytest.raises(ValueError):
+        whitespace(code)

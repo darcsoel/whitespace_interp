@@ -73,3 +73,29 @@ def test_stack_operations(code, tokens):
     parser = WhitespaceParser(code)
     parsed_tokens = parser.process()
     assert parsed_tokens == tokens
+
+
+@pytest.mark.parametrize(
+    "code, tokens",
+    [
+        ("  \t\n\t\n \t\n\n\n", ["stack_push", "1", "stack_pop_number", "end"]),
+        (
+            "   \t\n   \t \n   \t\t\n \t \t\t\n\t\n \t\n\n\n",
+            [
+                "stack_push",
+                "01",
+                "stack_push",
+                "010",
+                "stack_push",
+                "011",
+                "stack_copy",
+                "11",
+                "stack_pop_number",
+                "end",
+            ],
+        ),
+    ],
+)
+def test_stack_edge_cases(code, tokens):
+    parser = WhitespaceParser(code)
+    assert parser.process() == tokens

@@ -25,7 +25,7 @@ class Stack:
         self._values.append(str(value))
 
     def get_from_top(self, index: int) -> str:
-        return self._values[len(self._values) - index]
+        return self._values[(index + 1) * -1]
 
     def get(self, index: int) -> str:
         return self._values[index]
@@ -65,7 +65,7 @@ class WhitespaceInterpreter:
             raise ValueError("Not valid number. Number could not contain only LF symbol.")
 
         if len(value) == 1:
-            return 0
+            raise ValueError
 
         sign = 1 if value[0] == "0" else -1
         return sign * int(value[1:], 2)
@@ -97,7 +97,11 @@ class WhitespaceInterpreter:
             self._stack.push(top_value)
             self._stack.push(top_value)
         elif token == WhitespaceTokens.STACK_COPY:
-            stack_item = self._stack.get_from_top(self.binary_to_number(self._tokens[index + 1]))
+            copy_from_top_index = self.binary_to_number(self._tokens[index + 1])
+            if copy_from_top_index < 0:
+                raise ValueError("copy with negative index is not supported")
+
+            stack_item = self._stack.get_from_top(copy_from_top_index)
             self._stack.push(stack_item)
         elif token == WhitespaceTokens.STACK_SWAP:
             top1 = self._stack.pop()
