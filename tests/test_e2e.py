@@ -86,7 +86,7 @@ def test_stack_edge_cases(code):
 
 @pytest.mark.parametrize(
     "code, result",
-    [("  \t\t\n   \t  \n\t   \t\n \t\n\n\n", "3"), ("  \t\t \n   \t  \n\t  \t\t\n \t\n\n\n", "6")],
+    [("  \t\t\n   \t  \n\t   \t\n \t\n\n\n", "3"), ("  \t\t \n   \t  \n\t  \t\t\n \t\n\n\n", "-6")],
 )
 def test_arithmetic_operations(code, result):
     assert whitespace(code) == result

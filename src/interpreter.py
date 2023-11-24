@@ -76,7 +76,7 @@ class WhitespaceInterpreter:
     @staticmethod
     def number_to_binary(decimal: int) -> str:
         sign = "0" if decimal > 0 else "1"
-        return f"{sign}{decimal:b}"
+        return f"{sign}{abs(decimal):b}"
 
     @staticmethod
     @lru_cache
@@ -140,17 +140,17 @@ class WhitespaceInterpreter:
         elif token == WhitespaceTokens.SUBSCTRACT:
             first = self.pop_number_from_stack()
             second = self.pop_number_from_stack()
-            result = self.number_to_binary(first - second)
+            result = self.number_to_binary(second - first)
             self._stack.push(result)
         elif token == WhitespaceTokens.MUPLITIPLICATION:
             first = self.pop_number_from_stack()
             second = self.pop_number_from_stack()
-            result = self.number_to_binary(first * second)
+            result = self.number_to_binary(second * first)
             self._stack.push(result)
         elif token == WhitespaceTokens.INTEGER_DIVISION:
             first = self.pop_number_from_stack()
             second = self.pop_number_from_stack()
-            result = self.number_to_binary(first // second)
+            result = self.number_to_binary(second // first)
             self._stack.push(result)
         elif token == WhitespaceTokens.MODULO:
             first = self.pop_number_from_stack()
