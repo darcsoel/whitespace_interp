@@ -1,3 +1,5 @@
+from functools import lru_cache
+
 from commands import (
     WhitespaceTokens,
     arithmetic_commands,
@@ -16,11 +18,17 @@ class Stack:
     def __init__(self) -> None:
         self._values: list[str] = []
 
+    def __bool__(self) -> bool:
+        return len(self._values) > 0
+
     def pop(self) -> str:
         return self._values.pop()
 
     def push(self, value: str | int) -> None:
         self._values.append(str(value))
+
+    def get_from_top(self, index: int) -> str:
+        return self._values[(index + 1) * -1]
 
     def get(self, index: int) -> str:
         return self._values[index]
@@ -41,6 +49,7 @@ class WhitespaceInterpreter:
         self._subroutine_last_location: int | None = None
 
     @staticmethod
+    @lru_cache
     def binary_to_number(value: str) -> int:
         """
         Parse binary to decimal.
@@ -65,6 +74,12 @@ class WhitespaceInterpreter:
         return sign * int(value[1:], 2)
 
     @staticmethod
+    def number_to_binary(decimal: int) -> str:
+        sign = "0" if decimal > 0 else "1"
+        return f"{sign}{abs(decimal):b}"
+
+    @staticmethod
+    @lru_cache
     def binary_to_char(value: str) -> str:
         if not value:
             return ""
@@ -90,7 +105,11 @@ class WhitespaceInterpreter:
             self._stack.push(top_value)
             self._stack.push(top_value)
         elif token == WhitespaceTokens.STACK_COPY:
-            stack_item = self._stack.get(self.binary_to_number(self._tokens[index + 1]))
+            copy_from_top_index = self.binary_to_number(self._tokens[index + 1])
+            if copy_from_top_index < 0:
+                raise ValueError("copy with negative index is not supported")
+
+            stack_item = self._stack.get_from_top(copy_from_top_index)
             self._stack.push(stack_item)
         elif token == WhitespaceTokens.STACK_SWAP:
             top1 = self._stack.pop()
@@ -104,7 +123,7 @@ class WhitespaceInterpreter:
             number = self.binary_to_number(self._tokens[index + 1])
             top_elem = self._stack.pop()
 
-            while number:
+            while number and self._stack:
                 self._stack.pop()
                 number -= 1
 
@@ -116,26 +135,30 @@ class WhitespaceInterpreter:
         if token == WhitespaceTokens.ADD:
             first = self.pop_number_from_stack()
             second = self.pop_number_from_stack()
-            self._stack.push(first + second)
+            result = self.number_to_binary(first + second)
+            self._stack.push(result)
         elif token == WhitespaceTokens.SUBSCTRACT:
             first = self.pop_number_from_stack()
             second = self.pop_number_from_stack()
-            self._stack.push(second - first)
+            result = self.number_to_binary(second - first)
+            self._stack.push(result)
         elif token == WhitespaceTokens.MUPLITIPLICATION:
             first = self.pop_number_from_stack()
             second = self.pop_number_from_stack()
-            self._stack.push(first * second)
+            result = self.number_to_binary(second * first)
+            self._stack.push(result)
         elif token == WhitespaceTokens.INTEGER_DIVISION:
             first = self.pop_number_from_stack()
             second = self.pop_number_from_stack()
-            self._stack.push(second // first)
+            result = self.number_to_binary(second // first)
+            self._stack.push(result)
         elif token == WhitespaceTokens.MODULO:
             first = self.pop_number_from_stack()
             second = self.pop_number_from_stack()
 
             if not (modulo := second % first):
                 raise ValueError("Not valid result of modulo operation.")
-            self._stack.push(modulo)
+            self._stack.push(self.number_to_binary(modulo))
         else:
             raise RuntimeError("Unknown arithmetic command")
 
