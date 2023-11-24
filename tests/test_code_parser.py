@@ -122,7 +122,11 @@ def test_stack_edge_cases(code, tokens):
         (
             "  \t\t\n   \t  \n\t   \t\n \t\n\n\n",
             ["stack_push", "11", "stack_push", "0100", "add", "stack_pop_number", "end"],
-        )
+        ),
+        (
+            "  \t\t \n   \t  \n\t  \t\t\n \t\n\n\n",
+            ["stack_push", "110", "stack_push", "0100", "subsctract", "stack_pop_number", "end"],
+        ),
     ],
 )
 def test_arithmetic(code, tokens):

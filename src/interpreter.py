@@ -68,7 +68,7 @@ class WhitespaceInterpreter:
             raise ValueError("Not valid number. Number could not contain only LF symbol.")
 
         if len(value) == 1:
-            raise ValueError
+            return 0
 
         sign = 1 if value[0] == "0" else -1
         return sign * int(value[1:], 2)
@@ -135,26 +135,30 @@ class WhitespaceInterpreter:
         if token == WhitespaceTokens.ADD:
             first = self.pop_number_from_stack()
             second = self.pop_number_from_stack()
-            self._stack.push(self.number_to_binary(first + second))
+            result = self.number_to_binary(first + second)
+            self._stack.push(result)
         elif token == WhitespaceTokens.SUBSCTRACT:
             first = self.pop_number_from_stack()
             second = self.pop_number_from_stack()
-            self._stack.push(second - first)
+            result = self.number_to_binary(first - second)
+            self._stack.push(result)
         elif token == WhitespaceTokens.MUPLITIPLICATION:
             first = self.pop_number_from_stack()
             second = self.pop_number_from_stack()
-            self._stack.push(first * second)
+            result = self.number_to_binary(first * second)
+            self._stack.push(result)
         elif token == WhitespaceTokens.INTEGER_DIVISION:
             first = self.pop_number_from_stack()
             second = self.pop_number_from_stack()
-            self._stack.push(second // first)
+            result = self.number_to_binary(first // second)
+            self._stack.push(result)
         elif token == WhitespaceTokens.MODULO:
             first = self.pop_number_from_stack()
             second = self.pop_number_from_stack()
 
             if not (modulo := second % first):
                 raise ValueError("Not valid result of modulo operation.")
-            self._stack.push(modulo)
+            self._stack.push(self.number_to_binary(modulo))
         else:
             raise RuntimeError("Unknown arithmetic command")
 
