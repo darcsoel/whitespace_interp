@@ -67,6 +67,21 @@ def test_parse_tokens_for_positive_number_push(whitespace_code, tokens):
                 "end",
             ],
         ),
+        (
+            "   \t\n   \t \n   \t\t\n \t\n\t\t     \n\t\n \t\n\n\n",
+            [
+                "stack_push",
+                "01",
+                "stack_push",
+                "010",
+                "stack_push",
+                "011",
+                "stack_slide_n_top_off",
+                "1100000",
+                "stack_pop_number",
+                "end",
+            ],
+        ),
     ],
 )
 def test_stack_operations(code, tokens):
@@ -99,3 +114,18 @@ def test_stack_operations(code, tokens):
 def test_stack_edge_cases(code, tokens):
     parser = WhitespaceParser(code)
     assert parser.process() == tokens
+
+
+@pytest.mark.parametrize(
+    "code, tokens",
+    [
+        (
+            "  \t\t\n   \t  \n\t   \t\n \t\n\n\n",
+            ["stack_push", "11", "stack_push", "0100", "add", "stack_pop_number", "end"],
+        )
+    ],
+)
+def test_arithmetic(code, tokens):
+    parser = WhitespaceParser(code)
+    parsed_tokens = parser.process()
+    assert parsed_tokens == tokens

@@ -68,6 +68,7 @@ def test_label_with_comments(code, result):
     [
         ("   \t\n   \t \n   \t\t\n \t  \t \n\t\n \t\n\n\n", "1"),
         ("   \t\n   \t \n   \t\t\n \t   \n\t\n \t\n\n\n", "3"),
+        ("   \t\n   \t \n   \t\t\n \t\n\t\t     \n\t\n \t\n\n\n", "3"),
     ],
 )
 def test_stack_operations(code, result):
@@ -81,3 +82,13 @@ def test_stack_operations(code, result):
 def test_stack_edge_cases(code):
     with pytest.raises(ValueError):
         whitespace(code)
+
+
+@pytest.mark.parametrize(
+    "code, result",
+    [
+        ("  \t\t\n   \t  \n\t   \t\n \t\n\n\n", "3"),
+    ],
+)
+def test_arithmetic_operations(code, result):
+    assert whitespace(code) == result

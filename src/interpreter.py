@@ -18,6 +18,9 @@ class Stack:
     def __init__(self) -> None:
         self._values: list[str] = []
 
+    def __bool__(self) -> bool:
+        return len(self._values) > 0
+
     def pop(self) -> str:
         return self._values.pop()
 
@@ -71,6 +74,11 @@ class WhitespaceInterpreter:
         return sign * int(value[1:], 2)
 
     @staticmethod
+    def number_to_binary(decimal: int) -> str:
+        sign = "0" if decimal > 0 else "1"
+        return f"{sign}{decimal:b}"
+
+    @staticmethod
     @lru_cache
     def binary_to_char(value: str) -> str:
         if not value:
@@ -115,7 +123,7 @@ class WhitespaceInterpreter:
             number = self.binary_to_number(self._tokens[index + 1])
             top_elem = self._stack.pop()
 
-            while number:
+            while number and self._stack:
                 self._stack.pop()
                 number -= 1
 
@@ -127,7 +135,7 @@ class WhitespaceInterpreter:
         if token == WhitespaceTokens.ADD:
             first = self.pop_number_from_stack()
             second = self.pop_number_from_stack()
-            self._stack.push(first + second)
+            self._stack.push(self.number_to_binary(first + second))
         elif token == WhitespaceTokens.SUBSCTRACT:
             first = self.pop_number_from_stack()
             second = self.pop_number_from_stack()
